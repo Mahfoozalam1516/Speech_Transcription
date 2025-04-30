@@ -1,16 +1,12 @@
 from flask import Flask, render_template, request, jsonify
 import os
-from dotenv import load_dotenv
 from deepgram import DeepgramClient, PrerecordedOptions, FileSource
 from werkzeug.utils import secure_filename
-
-# Load environment variables
-load_dotenv()
 
 app = Flask(__name__)
 
 # Configuration
-UPLOAD_FOLDER = 'uploads'
+UPLOAD_FOLDER = '/app/uploads'  # Render's filesystem is ephemeral, use /app as base
 ALLOWED_EXTENSIONS = {'mp3', 'wav', 'm4a', 'ogg'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -55,7 +51,7 @@ def transcribe():
 
             # Configure Deepgram options
             options = PrerecordedOptions(
-                model="nova-2",
+                model="nova-3",
                 smart_format=True,
             )
 
@@ -73,4 +69,5 @@ def transcribe():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.getenv('PORT', 5000))  # Use Render's PORT env variable
+    app.run(host='0.0.0.0', port=port, debug=False)

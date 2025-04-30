@@ -1,4 +1,4 @@
 flask==2.3.2
-python-dotenv==1.0.0
 deepgram-sdk==3.4.0
 werkzeug==2.3.6
+gunicorn==22.0.0
