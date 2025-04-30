@@ -6,7 +6,7 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 
 # Configuration
-UPLOAD_FOLDER = '/app/uploads'  # Render's filesystem is ephemeral, use /app as base
+UPLOAD_FOLDER = '/tmp/uploads'  # Use /tmp for writable storage in Render
 ALLOWED_EXTENSIONS = {'mp3', 'wav', 'm4a', 'ogg'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
