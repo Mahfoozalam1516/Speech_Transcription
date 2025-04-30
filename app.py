@@ -52,7 +52,13 @@ def transcribe():
             # Configure Deepgram options
             options = PrerecordedOptions(
                 model="nova-3",
+                language="en",
+                summarize="v2",
+                topics=True,
+                intents=True,
+                detect_entities=True,
                 smart_format=True,
+                sentiment=True,
             )
 
             # Transcribe file
