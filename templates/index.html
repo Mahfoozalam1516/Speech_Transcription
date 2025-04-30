@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Transcription</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Audio Transcription Service</h1>
+        <div class="upload-section">
+            <input type="file" id="audioFile" accept=".mp3,.wav,.m4a,.ogg">
+            <button onclick="transcribeAudio()">Transcribe</button>
+        </div>
+        <div id="loading" style="display: none;">Processing...</div>
+        <div id="error" style="display: none; color: red;"></div>
+        <div id="result" style="display: none;">
+            <h2>Transcription Result:</h2>
+            <pre id="transcription"></pre>
+        </div>
+    </div>
+
+    <script>
+        async function transcribeAudio() {
+            const fileInput = document.getElementById('audioFile');
+            const loading = document.getElementById('loading');
+            const errorDiv = document.getElementById('error');
+            const resultDiv = document.getElementById('result');
+            const transcription = document.getElementById('transcription');
+
+            if (!fileInput.files[0]) {
+                errorDiv.textContent = 'Please select a file';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            loading.style.display = 'block';
+            errorDiv.style.display = 'none';
+            resultDiv.style.display = 'none';
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            try {
+                const response = await fetch('/transcribe', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                loading.style.display = 'none';
+
+                if (response.ok) {
+                    resultDiv.style.display = 'block';
+                    transcription.textContent = JSON.stringify(data, null, 2);
+                } else {
+                    errorDiv.textContent = data.error || 'An error occurred';
+                    errorDiv.style.display = 'block';
+                }
+            } catch (error) {
+                loading.style.display = 'none';
+                errorDiv.textContent = 'Network error: ' + error.message;
+                errorDiv.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
